@@ -1383,3 +1383,10 @@ footer {
     margin-bottom: 15px;
     font-size: 1.5rem;
 }
+
+/* Fix cho iPhone Safari */
+@supports (-webkit-touch-callout: none) {
+    body {
+        background-attachment: scroll !important;
+    }
+}
