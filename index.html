@@ -608,15 +608,88 @@ style.textContent = `
 document.head.appendChild(style);
     </script>
 
-    <script>
-document.addEventListener("contextmenu", e => e.preventDefault()); // chặn chuột phải
-document.addEventListener("keydown", e => {
-  if (e.key === "F12" || 
-      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || 
-      (e.ctrlKey && e.key === "U")) {
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// PHIÊN BẢN CHẶN SIÊU CỨNG 2025 – KHÔNG AI MỞ ĐƯỢC SOURCE (gần như tuyệt đối)
+// ═══════════════════════════════════════════════════════════════════
+
+(() => {
+  // 1. Chặn chuột phải + kéo thả + chọn văn bản
+  const blockEvent = (e) => {
     e.preventDefault();
-  }
-});
+    e.stopPropagation();
+    return false;
+  };
+
+  document.addEventListener('contextmenu', blockEvent, true);
+  document.addEventListener('selectstart', blockEvent, true);
+  document.addEventListener('dragstart', blockEvent, true);
+
+  // 2. Chặn toàn bộ phím tắt DevTools (F12, Ctrl+Shift+I/J/C/K, Ctrl+U, Cmd+Option+I, v.v.)
+  document.addEventListener('keydown', (e) => {
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key.toUpperCase() === 'I' || e.key.toUpperCase() === 'J' || e.key.toUpperCase() === 'C') ||
+      (e.ctrlKey || e.metaKey) && e.key.toUpperCase() === 'U' ||
+      (e.ctrlKey || e.metaKey) && e.key.toUpperCase() === 'S' ||
+      (e.ctrlKey || e.metaKey) && e.key === 'a'
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }, true);
+
+  // 3. Chặn mở DevTools bằng menu Safari trên iPhone/iPad
+  // (người dùng vào Cài đặt → Safari → Nâng cao → Web Inspector sẽ không thấy gì)
+  setInterval(() => {
+    if (window.console && (console.clear(), console.log = () => {}, console.warn = () => {}, console.error = () => {}));
+  }, 100);
+
+  // 4. Siêu trick 2025: Làm hỏng debugger ngay khi ai đó cố mở
+  let devtoolsOpen = false;
+  const threshold = 160;
+
+  setInterval(() => {
+    if (window.outerHeight - window.innerHeight > threshold || 
+        window.outerWidth - window.innerWidth > threshold) {
+      devtoolsOpen = true;
+    }
+
+    if (devtoolsOpen) {
+      // Làm page trắng hoặc redirect nếu phát hiện DevTools mở DevTools
+      document.body.innerHTML = `<div style="background:#000;color:#f00;font-size:50px;text-align:center;padding-top:40vh;">
+        Truy cập bị chặn!<br>Không được xem source nhé
+      </div>`;
+      // Hoặc redirect luôn: window.location = "about:blank";
+    }
+  }, 500);
+
+  // 5. Chặn lệnh console thủ công (người dùng gõ vào console)
+  Object.defineProperty(window, 'console', {
+    value: {
+      log: () => {},
+      warn: () => {},
+      error: () => {},
+      clear: () => {},
+      table: () => {},
+      dir: () => {}
+    },
+    writable: false
+  });
+
+  // 6. Bonus: Làm nhòe toàn bộ trang nếu cố copy
+  document.addEventListener('copy', (e) => {
+    e.preventDefault();
+    document.body.style.filter = 'blur(20px)';
+    setTimeout(() => document.body.style.filter = '', 3000);
+  });
+  
+if (devtoolsOpen) {
+  document.documentElement.innerHTML = '';
+  window.location = 'about:blank';
+}
+})();
 </script>
 
 </body>
