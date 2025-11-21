@@ -655,14 +655,6 @@ document.head.appendChild(style);
         window.outerWidth - window.innerWidth > threshold) {
       devtoolsOpen = true;
     }
-
-    if (devtoolsOpen) {
-      // Làm page trắng hoặc redirect nếu phát hiện DevTools mở DevTools
-      document.body.innerHTML = `<div style="background:#000;color:#f00;font-size:50px;text-align:center;padding-top:40vh;">
-        Truy cập bị chặn!<br>Không được xem source nhé
-      </div>`;
-      // Hoặc redirect luôn: window.location = "about:blank";
-    }
   }, 500);
 
   // 5. Chặn lệnh console thủ công (người dùng gõ vào console)
@@ -684,11 +676,6 @@ document.head.appendChild(style);
     document.body.style.filter = 'blur(20px)';
     setTimeout(() => document.body.style.filter = '', 3000);
   });
-  
-if (devtoolsOpen) {
-  document.documentElement.innerHTML = '';
-  window.location = 'about:blank';
-}
 })();
 </script>
 
